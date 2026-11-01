@@ -11,3 +11,6 @@ outputs/
 *.pt
 *.pth
 !checkpoints/*.pt
+
+# Local SD-Turbo copy (see README)
+checkpoints/sd-turbo/

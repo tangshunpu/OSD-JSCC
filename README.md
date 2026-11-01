@@ -8,7 +8,7 @@
   📄 Paper (coming soon) &nbsp;·&nbsp;
   <a href="#-visual-comparison">🖼️ Visual comparison</a> &nbsp;·&nbsp;
   <a href="#-inference">🚀 Inference</a> &nbsp;·&nbsp;
-  <a href="#-pretrained-model">📦 Weights</a>
+  <a href="#-pretrained-weights">📦 Weights</a>
 </p>
 
 OSD-JSCC sends an image over a noisy wireless channel and reconstructs it with
@@ -80,30 +80,87 @@ image.
 
 ## ⚙️ Installation
 
-The checkpoint is stored with [Git LFS](https://git-lfs.com).
-
 ```bash
-git lfs install
+git lfs install                      # the OSD-JSCC checkpoint is stored with Git LFS
 git clone <this-repo-url> OSD-JSCC
 cd OSD-JSCC
-uv sync          # Python 3.12, see pyproject.toml
+uv sync                              # Python 3.12, see pyproject.toml
 ```
 
 Without [uv](https://docs.astral.sh/uv/), install the packages listed in
-`pyproject.toml` with pip.
+`pyproject.toml` with pip and drop the `uv run` prefix from the commands below.
 
-## 📦 Pretrained model
+## 📦 Pretrained weights
 
-| Checkpoint | Channel | CR | Trained SNR | Size |
-| --- | --- | ---: | --- | ---: |
-| `checkpoints/osd_jscc_cr96_awgn.pt` | AWGN | 96 | 0–20 dB | 290 MB |
+OSD-JSCC needs two sets of weights:
 
-The checkpoint contains only the weights trained in this work: the JSCC
-encoder and decoder, the latent adapter, the SNR embedding, the U-Net LoRA and
-`conv_in`/`conv_out`, and the fine-tuned VAE decoder. **SD-Turbo is not
-included.** The first run downloads
-[`stabilityai/sd-turbo`](https://huggingface.co/stabilityai/sd-turbo) from the
-Hugging Face Hub.
+| Weights | Location | Size |
+| --- | --- | ---: |
+| OSD-JSCC checkpoint (AWGN, CR = 96, trained on 0–20 dB) | `checkpoints/osd_jscc_cr96_awgn.pt`, included via Git LFS | 290 MB |
+| SD-Turbo U-Net, VAE and scheduler | `checkpoints/sd-turbo/`, or the Hugging Face cache | 3.6 GB |
+
+### 1. SD-Turbo
+
+The OSD-JSCC checkpoint stores only what training changed, so the original
+[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo) weights are needed as
+the base. Only its `unet/`, `vae/` and `scheduler/` folders are used. The text
+encoder and tokenizer are not needed, because the U-Net is conditioned on
+tokens from the JSCC decoder instead of a text prompt. SD-Turbo is released
+under the
+[Stability AI Community License](https://huggingface.co/stabilityai/sd-turbo/blob/main/LICENSE.md).
+
+**Option A: download into the repository (recommended, works offline afterwards)**
+
+```bash
+uv run hf download stabilityai/sd-turbo \
+  unet/config.json unet/diffusion_pytorch_model.safetensors \
+  vae/config.json vae/diffusion_pytorch_model.safetensors \
+  scheduler/scheduler_config.json \
+  --local-dir checkpoints/sd-turbo
+```
+
+This gives:
+
+```text
+checkpoints/
+├── osd_jscc_cr96_awgn.pt
+└── sd-turbo/
+    ├── scheduler/scheduler_config.json
+    ├── unet/config.json, diffusion_pytorch_model.safetensors   (3.3 GB)
+    └── vae/config.json, diffusion_pytorch_model.safetensors    (320 MB)
+```
+
+`inference.py` uses `checkpoints/sd-turbo/` automatically when it exists. For
+a copy stored elsewhere, pass `--sd-model /path/to/sd-turbo`.
+
+**Option B: automatic download**
+
+Without `checkpoints/sd-turbo/`, the first run of `inference.py` downloads the
+same files from `stabilityai/sd-turbo` into the Hugging Face cache
+(`~/.cache/huggingface/hub`, or `$HF_HOME/hub`), and later runs reuse them.
+
+If huggingface.co is not reachable, point either option at a mirror, for
+example `export HF_ENDPOINT=https://hf-mirror.com`. Download the files listed
+above. The `*.fp16.safetensors` variants in the SD-Turbo repository are not
+used.
+
+### 2. How `inference.py` combines them
+
+`inference.py` first builds the model from SD-Turbo's U-Net, VAE and Euler
+scheduler (in fp16 on a GPU). It then adds rank-32 LoRA layers to the U-Net
+and creates the JSCC modules. Finally it loads
+`checkpoints/osd_jscc_cr96_awgn.pt` on top:
+
+| Module | Weights come from |
+| --- | --- |
+| VAE encoder | SD-Turbo, frozen |
+| Latent adapter, JSCC encoder and decoder, SNR embedding | OSD-JSCC checkpoint |
+| U-Net | SD-Turbo, plus LoRA, `conv_in` and `conv_out` from the checkpoint |
+| VAE decoder | SD-Turbo, with its convolution layers replaced by the fine-tuned ones from the checkpoint |
+| Scheduler | SD-Turbo config (Euler, trailing timestep spacing) |
+
+The script prints which SD-Turbo source it loaded, and it stops with an error
+if the checkpoint does not match the model.
 
 ## 🚀 Inference
 
@@ -147,6 +204,7 @@ uv run python inference.py --input path/to/images --snr-db 0 10 20 --output-dir 
 | `--tile-size` | `2048` | VAE tile size for large images, in pixels; `0` disables tiling |
 | `--seed` | `42` | Channel-noise seed; image *i* uses `seed + i` at every SNR |
 | `--device` | `cuda` if available | `cpu` also works, in fp32, but is slow |
+| `--sd-model` | `checkpoints/sd-turbo` if present, else `stabilityai/sd-turbo` | SD-Turbo folder or Hugging Face id |
 
 Images of any size work. They are padded to a multiple of 128 pixels and
 cropped back afterwards.
@@ -176,7 +234,7 @@ that fits your GPU.
 
 ```text
 assets/                 figures used in this README
-checkpoints/            pretrained weights (Git LFS)
+checkpoints/            OSD-JSCC weights (Git LFS); put SD-Turbo in checkpoints/sd-turbo/
 models/OSDv3.py         OSD-JSCC model (class OSDV3)
 models/channel.py       AWGN / Rayleigh channel with power normalization
 inference.py            inference on Kodak or any image folder

@@ -21,6 +21,7 @@ from torchvision import transforms
 
 from models import OSDV3
 
+LOCAL_SD_TURBO = Path("checkpoints/sd-turbo")
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp"}
 TO_TENSOR = transforms.Compose(
     (transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)))
@@ -36,6 +37,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=Path("outputs"))
     parser.add_argument("--checkpoint", type=Path,
                         default=Path("checkpoints/osd_jscc_cr96_awgn.pt"))
+    parser.add_argument("--sd-model",
+                        help="SD-Turbo as a local folder (with unet/, vae/, scheduler/) or a "
+                             "Hugging Face id. Default: checkpoints/sd-turbo if it exists, "
+                             "otherwise stabilityai/sd-turbo from the Hub cache.")
     parser.add_argument("--snr-db", type=float, nargs="+", default=[10.0],
                         help="Channel SNRs in dB; the model was trained on 0-20 dB.")
     parser.add_argument("--metrics", nargs="*", default=["psnr"],
@@ -51,12 +56,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_model(checkpoint: Path, device: torch.device, amp: bool) -> OSDV3:
+def load_model(
+    checkpoint: Path, device: torch.device, amp: bool, sd_model: str | None = None
+) -> OSDV3:
     payload = torch.load(checkpoint, map_location="cpu", weights_only=True)
     config = payload["model_config"]
-    # The checkpoint holds only the trained weights; SD-Turbo comes from the Hub.
+    if sd_model is None:
+        sd_model = (str(LOCAL_SD_TURBO) if LOCAL_SD_TURBO.is_dir()
+                    else payload["train_config"]["sd_model_id"])
+    print(f"Loading SD-Turbo U-Net, VAE and scheduler from {sd_model}")
+    # SD-Turbo provides the frozen modules; the checkpoint then overwrites the
+    # trained parts (U-Net LoRA, conv_in/conv_out, VAE decoder, JSCC modules).
     model = OSDV3.from_pretrained(
-        sd_model_id=payload["train_config"]["sd_model_id"],
+        sd_model_id=sd_model,
         torch_dtype=torch.float16 if amp else torch.float32,
         compression_ratio=config["compression_ratio"],
         channel=config["channel"],
@@ -146,7 +158,7 @@ def main() -> None:
     device = torch.device(args.device)
     amp = device.type == "cuda"
     images = find_images(args.input)
-    model = load_model(args.checkpoint, device, amp)
+    model = load_model(args.checkpoint, device, amp, args.sd_model)
     if args.tile_size:
         # Only the VAE is tiled (overlapping tiles, blended by diffusers); the JSCC
         # codeword and the U-Net step always cover the whole image.
