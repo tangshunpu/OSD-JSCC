@@ -24,7 +24,7 @@ diffusion-level perceptual quality at the cost of one U-Net evaluation.
 - **SNR-dependent timestep.** The U-Net starts at t = 499 below 10 dB and at
   t = 249 from 10 dB upward.
 - **Fast.** Decoding a Kodak image takes 67 ms on an RTX PRO 6000, 50.6× faster
-  than DiffJSCC.
+  than [DiffJSCC](https://github.com/mingyuyng/DiffJSCC).
 
 ## 🔥 News
 
@@ -46,7 +46,7 @@ PSNR↑ / LPIPS↓ / DISTS↓ over the full image.
 OSD-JSCC (lower right). Right: zoomed crops of each method.</em></p>
 
 The baselines are VTM+LDPC (separate source and channel coding), SwinJSCC,
-DiffJSCC and TF-DJSCC.
+[DiffJSCC](https://github.com/mingyuyng/DiffJSCC) and [TF-DJSCC](https://github.com/tangshunpu/TF_SemCom).
 
 ## 🧩 Method
 
@@ -82,7 +82,7 @@ image.
 
 ```bash
 git lfs install                      # the OSD-JSCC checkpoint is stored with Git LFS
-git clone <this-repo-url> OSD-JSCC
+git clone https://github.com/tangshunpu/OSD-JSCC.git
 cd OSD-JSCC
 uv sync                              # Python 3.12, see pyproject.toml
 ```
@@ -97,7 +97,7 @@ OSD-JSCC needs two sets of weights:
 | Weights | Location | Size |
 | --- | --- | ---: |
 | OSD-JSCC checkpoint (AWGN, CR = 96, trained on 0–20 dB) | `checkpoints/osd_jscc_cr96_awgn.pt`, included via Git LFS | 290 MB |
-| SD-Turbo U-Net, VAE and scheduler | `checkpoints/sd-turbo/`, or the Hugging Face cache | 3.6 GB |
+| SD-Turbo U-Net, VAE and scheduler | Hugging Face cache (downloaded automatically), or `checkpoints/sd-turbo/` | 3.6 GB |
 
 ### 1. SD-Turbo
 
@@ -109,7 +109,13 @@ tokens from the JSCC decoder instead of a text prompt. SD-Turbo is released
 under the
 [Stability AI Community License](https://huggingface.co/stabilityai/sd-turbo/blob/main/LICENSE.md).
 
-**Option A: download into the repository (recommended, works offline afterwards)**
+**Option A: automatic download (recommended)**
+
+Nothing to do. The first run of `inference.py` downloads the needed files from
+`stabilityai/sd-turbo` into the Hugging Face cache
+(`~/.cache/huggingface/hub`, or `$HF_HOME/hub`), and later runs reuse them.
+
+**Option B: manual download (offline machines or a custom location)**
 
 ```bash
 uv run hf download stabilityai/sd-turbo \
@@ -130,19 +136,13 @@ checkpoints/
     └── vae/config.json, diffusion_pytorch_model.safetensors    (320 MB)
 ```
 
-`inference.py` uses `checkpoints/sd-turbo/` automatically when it exists. For
-a copy stored elsewhere, pass `--sd-model /path/to/sd-turbo`.
-
-**Option B: automatic download**
-
-Without `checkpoints/sd-turbo/`, the first run of `inference.py` downloads the
-same files from `stabilityai/sd-turbo` into the Hugging Face cache
-(`~/.cache/huggingface/hub`, or `$HF_HOME/hub`), and later runs reuse them.
+`inference.py` uses `checkpoints/sd-turbo/` instead of the Hub whenever that
+folder exists. For a copy stored elsewhere, pass `--sd-model /path/to/sd-turbo`.
 
 If huggingface.co is not reachable, point either option at a mirror, for
-example `export HF_ENDPOINT=https://hf-mirror.com`. Download the files listed
-above. The `*.fp16.safetensors` variants in the SD-Turbo repository are not
-used.
+example `export HF_ENDPOINT=https://hf-mirror.com`. Only the files listed above
+are used. The `*.fp16.safetensors` variants in the SD-Turbo repository are not
+needed.
 
 ### 2. How `inference.py` combines them
 
