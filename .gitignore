@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Local data and outputs
+datasets/
+outputs/
+
+# Only checkpoints/*.pt is tracked (through Git LFS)
+*.pt
+*.pth
+!checkpoints/*.pt

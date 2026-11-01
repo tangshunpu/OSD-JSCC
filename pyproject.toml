@@ -1,0 +1,19 @@
+[project]
+name = "osd-jscc"
+version = "0.1.0"
+description = "OSD-JSCC: SNR-adaptive one-step diffusion for perceptual wireless image transmission"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy==1.26.4",
+    "pillow==12.2.0",
+    "pyiqa==0.1.15.post2",
+    "torch==2.11.0",
+    "torchvision==0.26.0",
+    "accelerate>=1.2.0",
+    "diffusers>=0.35.0",
+    "peft>=0.17.0",
+    "transformers>=4.56.0",
+]
+
+[tool.uv]
+package = false

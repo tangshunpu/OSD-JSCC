@@ -1,0 +1,195 @@
+<p align="center">
+  <img src="assets/logo.webp" width="200" alt="OSD-JSCC logo">
+</p>
+
+<h1 align="center">OSD-JSCC: SNR-Adaptive One-Step Diffusion for<br>Perceptual Wireless Image Transmission</h1>
+
+<p align="center">
+  📄 Paper (coming soon) &nbsp;·&nbsp;
+  <a href="#-visual-comparison">🖼️ Visual comparison</a> &nbsp;·&nbsp;
+  <a href="#-inference">🚀 Inference</a> &nbsp;·&nbsp;
+  <a href="#-pretrained-model">📦 Weights</a>
+</p>
+
+OSD-JSCC sends an image over a noisy wireless channel and reconstructs it with
+**a single step of a pretrained diffusion U-Net** (SD-Turbo). The JSCC decoder
+does not try to recover a clean latent. Instead it predicts a noisy diffusion
+state, and the SNR chooses how much denoising that state gets. The result is
+diffusion-level perceptual quality at the cost of one U-Net evaluation.
+
+- **SNR-adaptive transceiver.** Every JSCC encoder and decoder block is
+  conditioned on the channel SNR through adaptive group normalization (AdaGN).
+- **One-step refinement.** The decoder output, together with semantic and SNR
+  tokens, goes through one SD-Turbo U-Net step (LoRA) and the VAE decoder.
+- **SNR-dependent timestep.** The U-Net starts at t = 499 below 10 dB and at
+  t = 249 from 10 dB upward.
+- **Fast.** Decoding a Kodak image takes 67 ms on an RTX PRO 6000, 50.6× faster
+  than DiffJSCC.
+
+## 🔥 News
+
+- **2026-11**: Inference code and pretrained weights released.
+
+## 🖼️ Visual comparison
+
+AWGN channel at **0 dB SNR**, compression ratio **CR = 96**. Numbers are
+PSNR↑ / LPIPS↓ / DISTS↓ over the full image.
+
+<p align="center">
+  <img src="assets/twocats_awgn_0db.png" width="88%" alt="Two cats at 0 dB">
+</p>
+
+<p align="center">
+  <img src="assets/merlion_awgn_0db.png" width="100%" alt="Merlion, Singapore, at 0 dB">
+</p>
+<p align="center"><em>Merlion Park, Singapore (3072×2048). Left: original (upper left) and
+OSD-JSCC (lower right). Right: zoomed crops of each method.</em></p>
+
+The baselines are VTM+LDPC (separate source and channel coding), SwinJSCC,
+DiffJSCC and TF-DJSCC.
+
+## 🧩 Method
+
+<p align="center">
+  <img src="assets/method.png" width="100%" alt="OSD-JSCC overview">
+</p>
+
+The transmitter encodes the image with the frozen SD-Turbo VAE, maps the latent
+to channel symbols with the SNR-conditioned JSCC encoder, and sends them over
+the channel. The receiver's JSCC decoder predicts a Gaussian diffusion state
+**y = μ + σ ⊙ ε** together with semantic tokens. One U-Net step at the
+SNR-selected timestep then refines the state, and the VAE decoder renders the
+image.
+
+## 📊 Quantitative results
+
+<p align="center">
+  <img src="assets/curves_kodak_clic2020.png" width="95%" alt="Metrics versus SNR on Kodak and CLIC2020">
+</p>
+
+| Dataset | SNR (dB) | PSNR ↑ | MS-SSIM ↑ | LPIPS ↓ | DISTS ↓ | FID ↓ |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Kodak | 0 | 22.46 | 0.797 | 0.187 | 0.091 | 57.58 |
+| Kodak | 6 | 24.28 | 0.865 | 0.121 | 0.065 | 39.34 |
+| Kodak | 12 | 25.41 | 0.899 | 0.091 | 0.052 | 31.42 |
+| Kodak | 20 | 26.05 | 0.915 | 0.077 | 0.046 | 27.53 |
+| CLIC2020 test | 0 | 25.36 | 0.868 | 0.138 | 0.067 | 3.85 |
+| CLIC2020 test | 6 | 27.37 | 0.913 | 0.092 | 0.045 | 2.43 |
+| CLIC2020 test | 12 | 28.64 | 0.935 | 0.070 | 0.034 | 1.91 |
+| CLIC2020 test | 20 | 29.45 | 0.945 | 0.059 | 0.029 | 1.69 |
+
+## ⚙️ Installation
+
+The checkpoint is stored with [Git LFS](https://git-lfs.com).
+
+```bash
+git lfs install
+git clone <this-repo-url> OSD-JSCC
+cd OSD-JSCC
+uv sync          # Python 3.12, see pyproject.toml
+```
+
+Without [uv](https://docs.astral.sh/uv/), install the packages listed in
+`pyproject.toml` with pip.
+
+## 📦 Pretrained model
+
+| Checkpoint | Channel | CR | Trained SNR | Size |
+| --- | --- | ---: | --- | ---: |
+| `checkpoints/osd_jscc_cr96_awgn.pt` | AWGN | 96 | 0–20 dB | 290 MB |
+
+The checkpoint contains only the weights trained in this work: the JSCC
+encoder and decoder, the latent adapter, the SNR embedding, the U-Net LoRA and
+`conv_in`/`conv_out`, and the fine-tuned VAE decoder. **SD-Turbo is not
+included.** The first run downloads
+[`stabilityai/sd-turbo`](https://huggingface.co/stabilityai/sd-turbo) from the
+Hugging Face Hub.
+
+## 🚀 Inference
+
+`inference.py` takes a single image or a folder (searched recursively), sends
+every image over an AWGN channel at each requested SNR, and writes the
+reconstructions and a `metrics.csv`:
+
+```text
+outputs/
+├── snr_0dB/<image>.png
+├── snr_10dB/<image>.png
+└── metrics.csv
+```
+
+### Kodak
+
+```bash
+mkdir -p datasets/Kodak
+for i in $(seq -w 1 24); do
+  wget -q -P datasets/Kodak http://r0k.us/graphics/kodak/kodak/kodim$i.png
+done
+
+uv run python inference.py --input datasets/Kodak \
+  --snr-db 0 3 6 9 12 15 18 20 --metrics psnr lpips dists --output-dir outputs/kodak
+```
+
+With the default seed this reproduces the paper's Kodak numbers, for example
+22.458 dB PSNR, 0.1866 LPIPS and 0.0911 DISTS at 0 dB. Other GPUs can differ
+in the last digits.
+
+### Your own images
+
+```bash
+uv run python inference.py --input path/to/images --snr-db 0 10 20 --output-dir outputs/mine
+```
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `--snr-db` | `10` | One or more channel SNRs in dB (trained on 0–20 dB) |
+| `--metrics` | `psnr` | Any of `psnr`, `lpips`, `dists` (computed on 8-bit outputs) |
+| `--tile-size` | `2048` | VAE tile size for large images, in pixels; `0` disables tiling |
+| `--seed` | `42` | Channel-noise seed; image *i* uses `seed + i` at every SNR |
+| `--device` | `cuda` if available | `cpu` also works, in fp32, but is slow |
+
+Images of any size work. They are padded to a multiple of 128 pixels and
+cropped back afterwards.
+
+### Large images and tiling
+
+The whole image is always transmitted as one codeword, and the U-Net step
+always sees the whole latent. Only the VAE, which needs the most memory, is
+tiled. When an image side exceeds `--tile-size`, the VAE encoder and decoder
+run on overlapping tiles that are blended together. Images within the tile
+size run in one piece, so Kodak, the two-cats image and all CLIC2020 test
+images are processed exactly as in the paper.
+
+| `--tile-size` | Peak GPU memory, 3072×2048 image | Merlion at 0 dB (PSNR / LPIPS / DISTS) |
+| --- | ---: | --- |
+| `0` (no tiling) | 22.2 GiB | 21.11 / 0.147 / 0.074 |
+| `2048` (default) | 15.4 GiB | 20.99 / 0.147 / 0.071 |
+| `1536` | 9.5 GiB | 20.95 / 0.156 / 0.074 |
+| `768` | 4.0 GiB | 20.85 / 0.171 / 0.080 |
+
+Memory is PyTorch's peak allocation, including the 1.9 GiB of model weights.
+
+Larger tiles are closer to whole-image quality, so use the largest tile size
+that fits your GPU.
+
+## 📁 Repository structure
+
+```text
+assets/                 figures used in this README
+checkpoints/            pretrained weights (Git LFS)
+models/OSDv3.py         OSD-JSCC model (class OSDV3)
+models/channel.py       AWGN / Rayleigh channel with power normalization
+inference.py            inference on Kodak or any image folder
+```
+
+## 📝 Citation
+
+The BibTeX entry will be added once the paper is public.
+
+## 🙏 Acknowledgements
+
+This work builds on [SD-Turbo](https://huggingface.co/stabilityai/sd-turbo),
+[diffusers](https://github.com/huggingface/diffusers),
+[PEFT](https://github.com/huggingface/peft) and
+[pyiqa](https://github.com/chaofengc/IQA-PyTorch). The fine-tuning losses follow
+[AEIC](https://github.com/LuizScarlet/AEIC).
