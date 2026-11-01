@@ -5,11 +5,13 @@
 <h1 align="center">OSD-JSCC: Neural Joint Source–Channel Coding<br>with One-Step Diffusion</h1>
 
 <p align="center">
+  <a href="https://tangshunpu.github.io/OSD_JSCC_Project/"><img src="https://img.shields.io/badge/%F0%9F%8C%90%20Project-Page-blue" alt="Project page"></a>
   <a href="https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
   <a href="https://huggingface.co/tangshunpu/OSD-JSCC"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-Hugging%20Face-yellow" alt="Weights on Hugging Face"></a>
 </p>
 
 <p align="center">
+  <a href="https://tangshunpu.github.io/OSD_JSCC_Project/">🌐 Project page</a> &nbsp;·&nbsp;
   📄 Paper (coming soon) &nbsp;·&nbsp;
   <a href="#-visual-comparison">🖼️ Visual comparison</a> &nbsp;·&nbsp;
   <a href="#-inference">🚀 Inference</a> &nbsp;·&nbsp;
