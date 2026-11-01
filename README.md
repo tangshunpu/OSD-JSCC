@@ -5,6 +5,11 @@
 <h1 align="center">OSD-JSCC: SNR-Adaptive One-Step Diffusion for<br>Perceptual Wireless Image Transmission</h1>
 
 <p align="center">
+  <a href="https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+  <a href="https://huggingface.co/tangshunpu/OSD-JSCC"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-Hugging%20Face-yellow" alt="Weights on Hugging Face"></a>
+</p>
+
+<p align="center">
   📄 Paper (coming soon) &nbsp;·&nbsp;
   <a href="#-visual-comparison">🖼️ Visual comparison</a> &nbsp;·&nbsp;
   <a href="#-inference">🚀 Inference</a> &nbsp;·&nbsp;
@@ -28,6 +33,7 @@ diffusion-level perceptual quality at the cost of one U-Net evaluation.
 
 ## 🔥 News
 
+- **2026-11**: [Colab demo](https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb) comparing OSD-JSCC with SwinJSCC.
 - **2026-11**: Inference code and pretrained weights released.
 
 ## 🖼️ Visual comparison
@@ -78,6 +84,20 @@ image.
 | CLIC2020 test | 12 | 28.64 | 0.935 | 0.070 | 0.034 | 1.91 |
 | CLIC2020 test | 20 | 29.45 | 0.945 | 0.059 | 0.029 | 1.69 |
 
+## 🎮 Colab demo
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb)
+
+[`demo.ipynb`](https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb) runs on a free T4 GPU. Pick a Kodak image or upload
+your own, choose an SNR, and compare OSD-JSCC with the SwinJSCC baseline side
+by side, with zoomed crops, PSNR / LPIPS / DISTS, and a sweep over SNRs. The
+weights of both models come from
+[Hugging Face](https://huggingface.co/tangshunpu/OSD-JSCC).
+
+<p align="center">
+  <img src="assets/colab_demo.png" width="95%" alt="Colab demo: SwinJSCC vs OSD-JSCC at 0 dB">
+</p>
+
 ## ⚙️ Installation
 
 ```bash
@@ -96,7 +116,7 @@ OSD-JSCC needs two sets of weights:
 
 | Weights | Location | Size |
 | --- | --- | ---: |
-| OSD-JSCC checkpoint (AWGN, CR = 96, trained on 0–20 dB) | `checkpoints/osd_jscc_cr96_awgn.pt`, included via Git LFS | 290 MB |
+| OSD-JSCC checkpoint (AWGN, CR = 96, trained on 0–20 dB) | `checkpoints/osd_jscc_cr96_awgn.pt` via Git LFS, also on [Hugging Face](https://huggingface.co/tangshunpu/OSD-JSCC) | 290 MB |
 | SD-Turbo U-Net, VAE and scheduler | Hugging Face cache (downloaded automatically), or `checkpoints/sd-turbo/` | 3.6 GB |
 
 ### 1. SD-Turbo
@@ -238,6 +258,7 @@ checkpoints/            OSD-JSCC weights (Git LFS); put SD-Turbo in checkpoints/
 models/OSDv3.py         OSD-JSCC model (class OSDV3)
 models/channel.py       AWGN / Rayleigh channel with power normalization
 inference.py            inference on Kodak or any image folder
+demo.ipynb              Colab demo: OSD-JSCC vs SwinJSCC
 ```
 
 ## 📝 Citation
