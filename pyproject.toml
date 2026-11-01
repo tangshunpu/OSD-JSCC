@@ -1,7 +1,7 @@
 [project]
 name = "osd-jscc"
 version = "0.1.0"
-description = "OSD-JSCC: SNR-adaptive one-step diffusion for perceptual wireless image transmission"
+description = "OSD-JSCC: Neural joint source–channel coding with one-step diffusion"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "numpy==1.26.4",

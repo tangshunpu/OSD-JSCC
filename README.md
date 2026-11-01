@@ -2,7 +2,7 @@
   <img src="assets/logo.webp" width="200" alt="OSD-JSCC logo">
 </p>
 
-<h1 align="center">OSD-JSCC: SNR-Adaptive One-Step Diffusion for<br>Perceptual Wireless Image Transmission</h1>
+<h1 align="center">OSD-JSCC: Neural Joint Source–Channel Coding<br>with One-Step Diffusion</h1>
 
 <p align="center">
   <a href="https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
