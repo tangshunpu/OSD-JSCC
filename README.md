@@ -12,6 +12,7 @@
 <p align="center">
   <a href="https://tangshunpu.github.io/OSD_JSCC_Project/"><img src="https://img.shields.io/badge/%F0%9F%8C%90%20Project-Page-blue" alt="Project page"></a>
   <a href="https://arxiv.org/abs/2611.06437"><img src="https://img.shields.io/badge/arXiv-2611.06437-b31b1b" alt="arXiv:2611.06437"></a>
+  <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Try%20Demo-Hugging%20Face-blue" alt="Try Demo"></a>
   <a href="https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
   <a href="https://huggingface.co/tangshunpu/OSD-JSCC"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-Hugging%20Face-yellow" alt="Weights on Hugging Face"></a>
   <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Online%20Demo-Hugging%20Face%20Spaces-yellow" alt="Online demo on Hugging Face Spaces"></a>
@@ -22,9 +23,14 @@
   <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P">🎮 Online demo</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2611.06437">📄 Paper</a>
   (<a href="https://arxiv.org/pdf/2611.06437">PDF</a>) &nbsp;·&nbsp;
+  <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P">🤗 Try Demo</a> &nbsp;·&nbsp;
   <a href="#-visual-comparison">🖼️ Visual comparison</a> &nbsp;·&nbsp;
   <a href="#-inference">🚀 Inference</a> &nbsp;·&nbsp;
   <a href="#-pretrained-weights">📦 Weights</a>
+</p>
+
+<p align="center">
+  <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P">Online demo with new weights (multi-rate progressive transmission only)</a>.
 </p>
 
 OSD-JSCC sends an image over a noisy wireless channel and reconstructs it with
