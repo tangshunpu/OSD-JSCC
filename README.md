@@ -14,10 +14,12 @@
   <a href="https://arxiv.org/abs/2611.06437"><img src="https://img.shields.io/badge/arXiv-2611.06437-b31b1b" alt="arXiv:2611.06437"></a>
   <a href="https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
   <a href="https://huggingface.co/tangshunpu/OSD-JSCC"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Weights-Hugging%20Face-yellow" alt="Weights on Hugging Face"></a>
+  <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Online%20Demo-Hugging%20Face%20Spaces-yellow" alt="Online demo on Hugging Face Spaces"></a>
 </p>
 
 <p align="center">
   <a href="https://tangshunpu.github.io/OSD_JSCC_Project/">🌐 Project page</a> &nbsp;·&nbsp;
+  <a href="https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P">🎮 Online demo</a> &nbsp;·&nbsp;
   <a href="https://arxiv.org/abs/2611.06437">📄 Paper</a>
   (<a href="https://arxiv.org/pdf/2611.06437">PDF</a>) &nbsp;·&nbsp;
   <a href="#-visual-comparison">🖼️ Visual comparison</a> &nbsp;·&nbsp;
@@ -43,6 +45,7 @@ diffusion-level perceptual quality at the cost of one U-Net evaluation.
 ## 🔥 News
 
 - **2026-11-04**: Preprint on arXiv ([abstract](https://arxiv.org/abs/2611.06437), [PDF](https://arxiv.org/pdf/2611.06437)).
+- **2026-11**: [Online demo](https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P) on Hugging Face Spaces.
 - **2026-11**: [Colab demo](https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb) comparing OSD-JSCC with SwinJSCC.
 - **2026-11**: Inference code and pretrained weights released.
 
