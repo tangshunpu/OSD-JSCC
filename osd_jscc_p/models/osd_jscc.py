@@ -423,7 +423,7 @@ class OSDJSCC(nn.Module):
             "snr_embedding_dim": self.snr_embedding_dim,
             "high_snr_threshold": self.high_snr_threshold,
             "snr_modulation": self.snr_modulation,
-            "architecture": "convnext_window_v3",
+            "architecture": "osd_jscc",
         }
 
     def train(self, mode: bool = True) -> "OSDJSCC":
@@ -598,10 +598,4 @@ class OSDJSCC(nn.Module):
         return reconstruction
 
 
-# Backward-compatible names used by earlier releases.
-V3JSCCEncoder = JSCCEncoder
-V3JSCCDecoder = JSCCDecoder
-OSDV3 = OSDJSCC
-OSDV3Output = OSDJSCCOutput
-
-__all__ = ["OSDJSCC", "OSDJSCCOutput", "OSDV3", "OSDV3Output"]
+__all__ = ["OSDJSCC", "OSDJSCCOutput"]

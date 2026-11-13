@@ -241,7 +241,3 @@ class OSDJSCCP(OSDJSCC):
             mask = self.prefix_mask(rate, *received.shape[-2:], received.device)
             outputs[rate] = self.receive(received[:, :channels] * mask, snr, rate)
         return outputs
-
-
-# Backward-compatible name used by earlier releases.
-MultirateOSDV3 = OSDJSCCP
