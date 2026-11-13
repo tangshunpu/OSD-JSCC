@@ -8,7 +8,7 @@ The inference model class is `models.OSDJSCCP`.
 
 ## Method
 
-![OSD-JSCC-P architecture and progressive transmission](assets/method.png)
+![OSD-JSCC-P architecture and progressive transmission](../assets/osd_jscc_p_method.png)
 
 The transmitter encodes an image into six independently power-normalized
 layers. The receiver zero-fills missing layers, conditions the JSCC decoder on
@@ -18,7 +18,7 @@ the released checkpoint and inference example below use **AWGN**.
 
 ## Progressive reconstruction
 
-![Progressive reconstruction on Kodak at 3 dB](assets/progressive_kodak.png)
+![Progressive reconstruction on Kodak at 3 dB](../assets/osd_jscc_p_progressive_kodak.png)
 
 Kodak `kodim23`, transmitted once over AWGN at 3 dB. Each image is decoded
 from the first one to six layers of the same transmission. Numbers below each
@@ -42,8 +42,6 @@ uv run python inference.py --model osd-jscc-p --input photo.png --snr-db 10
 uv run python inference.py --model osd-jscc-p \
   --input datasets/Kodak --snr-db 0 10 --rates 192 96 48
 ```
-
-The earlier `python -m osd_jscc_p.inference` entry point also remains available.
 
 Reconstructions are saved under `outputs/osd_jscc_p/snr_<SNR>dB/cr_<CR>/`,
 with per-image metrics in `outputs/osd_jscc_p/metrics.csv`. Use `--metrics psnr

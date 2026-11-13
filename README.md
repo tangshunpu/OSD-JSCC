@@ -49,7 +49,7 @@ diffusion-level perceptual quality at the cost of one U-Net evaluation.
 ## 🔥 News
 
 - **2026-11-13**: Released the [real-world SDR deployment](https://github.com/tangshunpu/OSD-JSCC-HackRF).
-- **2026-11-13**: Released the [new OSD-JSCC-P model, inference code, and pretrained weights](osd_jscc_p/README.md) for multirate progressive transmission.
+- **2026-11-13**: Released the [new OSD-JSCC-P model, inference code, and pretrained weights](docs/osd_jscc_p.md) for multirate progressive transmission.
 - **2026-11-09**: [OSD-JSCC-P demo](https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P) on Hugging Face Spaces (multirate progressive transmission).
 - **2026-11-04**: OSD-JSCC preprint on arXiv ([abstract](https://arxiv.org/abs/2611.06437), [PDF](https://arxiv.org/pdf/2611.06437)).
 - **2026-11-02**: [Colab demo](https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb) comparing OSD-JSCC with SwinJSCC.
@@ -214,7 +214,7 @@ outputs/
 └── metrics.csv
 ```
 
-The same entry point supports [OSD-JSCC-P](osd_jscc_p/README.md):
+The same entry point supports [OSD-JSCC-P](docs/osd_jscc_p.md):
 
 ```bash
 uv run python inference.py --model osd-jscc-p --input photo.png --snr-db 10 --rates 96 48

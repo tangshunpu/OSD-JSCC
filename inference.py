@@ -34,13 +34,13 @@ TO_TENSOR = transforms.Compose(
 )
 
 
-def parse_args(default_model: str = "osd-jscc") -> argparse.Namespace:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--input", type=Path, required=True,
                         help="An image, or a folder searched recursively for images.")
-    parser.add_argument("--model", choices=MODEL_NAMES, default=default_model,
+    parser.add_argument("--model", choices=MODEL_NAMES, default="osd-jscc",
                         help="Model to use (default: %(default)s).")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--checkpoint", type=Path)
@@ -209,8 +209,8 @@ class Metrics:
         return values
 
 
-def main(default_model: str = "osd-jscc") -> None:
-    args = parse_args(default_model)
+def main() -> None:
+    args = parse_args()
     if args.tile_size < 0 or args.tile_size % 8:
         raise ValueError("--tile-size must be 0 or a positive multiple of 8.")
     device = torch.device(args.device)
