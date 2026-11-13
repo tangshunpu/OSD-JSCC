@@ -4,6 +4,7 @@ OSD-JSCC-P is the progressive, multirate journal extension of
 [OSD-JSCC](../README.md). A single model encodes an image into six nested
 layers. The receiver can reconstruct the image after any prefix, supporting
 compression ratios (CRs) of **768, 384, 192, 96, 64, and 48**.
+The inference model class is `osd_jscc_p.models.OSDJSCCP`.
 
 ## Method
 

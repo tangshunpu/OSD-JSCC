@@ -24,7 +24,7 @@ import torch
 import torch.nn.functional as F
 
 from inference import LOCAL_SD_TURBO, Metrics, TO_TENSOR, find_images, seed_everything, to_uint8
-from .models import MultirateOSDV3
+from .models import OSDJSCCP
 
 RATES = (768, 384, 192, 96, 64, 48)
 
@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_model(checkpoint: Path, device: torch.device, sd_model: str | None) -> MultirateOSDV3:
+def load_model(checkpoint: Path, device: torch.device, sd_model: str | None) -> OSDJSCCP:
     with safe_open(checkpoint, framework="pt", device="cpu") as handle:
         metadata = handle.metadata() or {}
     if metadata.get("format") != "osd_jscc_p_weights_v1":
@@ -61,7 +61,7 @@ def load_model(checkpoint: Path, device: torch.device, sd_model: str | None) -> 
     if sd_model is None:
         sd_model = str(LOCAL_SD_TURBO) if LOCAL_SD_TURBO.is_dir() else "stabilityai/sd-turbo"
     print(f"Loading SD-Turbo U-Net, VAE and scheduler from {sd_model}")
-    model = MultirateOSDV3.from_config(
+    model = OSDJSCCP.from_config(
         config, sd_model_id=sd_model,
         torch_dtype=torch.float16 if device.type == "cuda" else torch.float32,
     )
@@ -78,7 +78,7 @@ def load_model(checkpoint: Path, device: torch.device, sd_model: str | None) -> 
 
 
 @torch.inference_mode()
-def transmit(model: MultirateOSDV3, image: torch.Tensor, snr_db: float,
+def transmit(model: OSDJSCCP, image: torch.Tensor, snr_db: float,
              rates: list[int]) -> dict[int, torch.Tensor]:
     height, width = image.shape[-2:]
     pad_h, pad_w = -height % model.downsample_factor, -width % model.downsample_factor

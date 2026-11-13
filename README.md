@@ -274,7 +274,7 @@ that fits your GPU.
 ```text
 assets/                 figures used in this README
 checkpoints/            OSD-JSCC weights (Git LFS); put SD-Turbo in checkpoints/sd-turbo/
-models/OSDv3.py         OSD-JSCC model (class OSDV3)
+models/osd_jscc.py      OSD-JSCC model (class OSDJSCC)
 models/channel.py       AWGN / Rayleigh channel with power normalization
 inference.py            inference on Kodak or any image folder
 demo.ipynb              Colab demo: OSD-JSCC vs SwinJSCC

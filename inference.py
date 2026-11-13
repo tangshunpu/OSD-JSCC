@@ -19,7 +19,7 @@ import torch
 import torch.nn.functional as F
 from torchvision import transforms
 
-from models import OSDV3
+from models import OSDJSCC
 
 LOCAL_SD_TURBO = Path("checkpoints/sd-turbo")
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".webp"}
@@ -58,7 +58,7 @@ def parse_args() -> argparse.Namespace:
 
 def load_model(
     checkpoint: Path, device: torch.device, amp: bool, sd_model: str | None = None
-) -> OSDV3:
+) -> OSDJSCC:
     payload = torch.load(checkpoint, map_location="cpu", weights_only=True)
     config = payload["model_config"]
     if sd_model is None:
@@ -67,7 +67,7 @@ def load_model(
     print(f"Loading SD-Turbo U-Net, VAE and scheduler from {sd_model}")
     # SD-Turbo provides the frozen modules; the checkpoint then overwrites the
     # trained parts (U-Net LoRA, conv_in/conv_out, VAE decoder, JSCC modules).
-    model = OSDV3.from_pretrained(
+    model = OSDJSCC.from_pretrained(
         sd_model_id=sd_model,
         torch_dtype=torch.float16 if amp else torch.float32,
         compression_ratio=config["compression_ratio"],
@@ -106,7 +106,7 @@ def seed_everything(seed: int) -> None:
 
 
 @torch.inference_mode()
-def transmit(model: OSDV3, image: torch.Tensor, snr_db: float, amp: bool) -> torch.Tensor:
+def transmit(model: OSDJSCC, image: torch.Tensor, snr_db: float, amp: bool) -> torch.Tensor:
     """Send one [1,3,H,W] image in [-1, 1] through the channel and reconstruct it."""
     height, width = image.shape[-2:]
     # The model needs sides divisible by 128; pad right/bottom and crop afterwards.
