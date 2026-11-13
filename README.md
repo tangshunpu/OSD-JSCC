@@ -284,14 +284,11 @@ demo.ipynb              Colab demo: OSD-JSCC vs SwinJSCC
 Shunpu Tang and Qianqian Yang. OSD-JSCC: Neural Joint Source-Channel Coding with One-Step Diffusion. arXiv:2611.06437 [eess.SP], 4 Nov 2026. [Abstract](https://arxiv.org/abs/2611.06437) · [PDF](https://arxiv.org/pdf/2611.06437)
 
 ```bibtex
-@misc{tang2026osdjsccneuraljointsourcechannel,
+@article{tang2026osdjscc,
   title={OSD-JSCC: Neural Joint Source-Channel Coding with One-Step Diffusion},
-  author={Shunpu Tang and Qianqian Yang},
-  year={2026},
-  eprint={2611.06437},
-  archivePrefix={arXiv},
-  primaryClass={eess.SP},
-  url={https://arxiv.org/abs/2611.06437}
+  author={Tang, Shunpu and Yang, Qianqian},
+  journal={arXiv preprint arXiv:2611.06437},
+  year={2026}
 }
 ```
 
