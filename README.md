@@ -69,7 +69,7 @@ PSNR↑ / LPIPS↓ / DISTS↓ over the full image.
 <p align="center"><em>Merlion Park, Singapore (3072×2048). Left: original (upper left) and
 OSD-JSCC (lower right). Right: zoomed crops of each method.</em></p>
 
-The baselines are VTM+LDPC (separate source and channel coding), SwinJSCC,
+The baselines are VTM+LDPC (separate source and channel coding), [SwinJSCC](https://github.com/semcomm/SwinJSCC),
 [DiffJSCC](https://github.com/mingyuyng/DiffJSCC) and [TF-DJSCC](https://github.com/tangshunpu/TF_SemCom).
 
 ## 🧩 Method
