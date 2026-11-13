@@ -49,10 +49,10 @@ diffusion-level perceptual quality at the cost of one U-Net evaluation.
 ## 🔥 News
 
 - **2026-11-13**: Released the [new OSD-JSCC-P model, inference code, and pretrained weights](osd_jscc_p/README.md) for multirate progressive transmission.
-- **2026-11-04**: Preprint on arXiv ([abstract](https://arxiv.org/abs/2611.06437), [PDF](https://arxiv.org/pdf/2611.06437)).
-- **2026-11**: [Try Demo](https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P) on Hugging Face Spaces (new weights, multi-rate progressive transmission only).
+- **2026-11-04**: OSD-JSCC preprint on arXiv ([abstract](https://arxiv.org/abs/2611.06437), [PDF](https://arxiv.org/pdf/2611.06437)).
+- **2026-11**: [OSD-JSCC-P demo](https://huggingface.co/spaces/tangshunpu/OSD-JSCC-P) on Hugging Face Spaces (multirate progressive transmission).
 - **2026-11**: [Colab demo](https://colab.research.google.com/github/tangshunpu/OSD-JSCC/blob/main/demo.ipynb) comparing OSD-JSCC with SwinJSCC.
-- **2026-11**: Inference code and pretrained weights released.
+- **2026-11**: OSD-JSCC inference code and pretrained weights released.
 
 ## 🖼️ Visual comparison
 
