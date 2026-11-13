@@ -1,8 +1,8 @@
 """Run the journal OSD-JSCC-P model from the repository root.
 
 Examples:
-    uv run python -m journal.inference --input photo.png --snr-db 10 --rates 96
-    uv run python -m journal.inference --input datasets/Kodak --snr-db 0 10 20
+    uv run python -m osd_jscc_p.inference --input photo.png --snr-db 10 --rates 96
+    uv run python -m osd_jscc_p.inference --input datasets/Kodak --snr-db 0 10 20
 
 All selected rates share one progressive transmission per image and SNR.
 The default checkpoint contains the trained AWGN model; SD-Turbo supplies the
