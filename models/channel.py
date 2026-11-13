@@ -13,10 +13,12 @@ class WirelessChannel(nn.Module):
 
     The real codeword is flattened and split into equal real/imaginary halves.
     Power is normalized independently for every image so the resulting complex
-    symbols have unit average power.
+    symbols have unit average power. ``rayleigh`` uses zero-forcing and
+    ``rayleigh_mmse`` uses LMMSE equalization; both draw one fading coefficient
+    per image (block fading).
     """
 
-    SUPPORTED = ("awgn", "rayleigh", "none")
+    SUPPORTED = ("awgn", "rayleigh", "rayleigh_mmse", "none")
 
     def __init__(self, channel_type: str = "awgn", equalizer_eps: float = 1e-8):
         super().__init__()
@@ -95,8 +97,16 @@ class WirelessChannel(nn.Module):
                 faded_real = h_real * real - h_imag * imag + noise_real
                 faded_imag = h_imag * real + h_real * imag + noise_imag
 
-                # Zero-forcing equalization: y * conj(h) / |h|^2.
-                gain = (h_real.square() + h_imag.square()).clamp_min(self.equalizer_eps)
+                if self.channel_type == "rayleigh":
+                    # Zero-forcing equalization: y * conj(h) / |h|^2.
+                    gain = (h_real.square() + h_imag.square()).clamp_min(
+                        self.equalizer_eps
+                    )
+                else:
+                    # LMMSE equalization for unit-power symbols:
+                    # y * conj(h) / (|h|^2 + 1/SNR). Deep fades shrink toward 0
+                    # instead of amplifying the noise; 2 * sigma^2 = 1/SNR.
+                    gain = h_real.square() + h_imag.square() + 2.0 * sigma.square()
                 out_real = (h_real * faded_real + h_imag * faded_imag) / gain
                 out_imag = (h_real * faded_imag - h_imag * faded_real) / gain
 

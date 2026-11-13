@@ -1,5 +1,5 @@
-"""OSD-JSCC-P model code (inference only)."""
+"""Compatibility import for the shared model package."""
 
-from .osd_jscc_p import OSDJSCCP
+from models import OSDJSCCP
 
 __all__ = ["OSDJSCCP"]

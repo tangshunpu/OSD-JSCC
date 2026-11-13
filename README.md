@@ -214,6 +214,12 @@ outputs/
 └── metrics.csv
 ```
 
+The same entry point supports [OSD-JSCC-P](osd_jscc_p/README.md):
+
+```bash
+uv run python inference.py --model osd-jscc-p --input photo.png --snr-db 10 --rates 96 48
+```
+
 ### Kodak
 
 ```bash
@@ -238,6 +244,8 @@ uv run python inference.py --input path/to/images --snr-db 0 10 20 --output-dir 
 
 | Option | Default | Meaning |
 | --- | --- | --- |
+| `--model` | `osd-jscc` | `osd-jscc` or `osd-jscc-p` |
+| `--rates` | all rates | Compression ratios for `osd-jscc-p` |
 | `--snr-db` | `10` | One or more channel SNRs in dB (trained on 0–20 dB) |
 | `--metrics` | `psnr` | Any of `psnr`, `lpips`, `dists` (computed on 8-bit outputs) |
 | `--tile-size` | `2048` | VAE tile size for large images, in pixels; `0` disables tiling |
@@ -275,6 +283,7 @@ that fits your GPU.
 assets/                 figures used in this README
 checkpoints/            OSD-JSCC weights (Git LFS); put SD-Turbo in checkpoints/sd-turbo/
 models/osd_jscc.py      OSD-JSCC model (class OSDJSCC)
+models/osd_jscc_p.py    OSD-JSCC-P model (class OSDJSCCP)
 models/channel.py       AWGN / Rayleigh channel with power normalization
 inference.py            inference on Kodak or any image folder
 demo.ipynb              Colab demo: OSD-JSCC vs SwinJSCC

@@ -4,7 +4,7 @@ OSD-JSCC-P is the progressive, multirate journal extension of
 [OSD-JSCC](../README.md). A single model encodes an image into six nested
 layers. The receiver can reconstruct the image after any prefix, supporting
 compression ratios (CRs) of **768, 384, 192, 96, 64, and 48**.
-The inference model class is `osd_jscc_p.models.OSDJSCCP`.
+The inference model class is `models.OSDJSCCP`.
 
 ## Method
 
@@ -36,12 +36,14 @@ git lfs pull
 uv sync
 
 # Reconstruct all six rates at 10 dB.
-uv run python -m osd_jscc_p.inference --input photo.png --snr-db 10
+uv run python inference.py --model osd-jscc-p --input photo.png --snr-db 10
 
 # Reconstruct selected rates for all images in a folder at two SNRs.
-uv run python -m osd_jscc_p.inference \
+uv run python inference.py --model osd-jscc-p \
   --input datasets/Kodak --snr-db 0 10 --rates 192 96 48
 ```
+
+The earlier `python -m osd_jscc_p.inference` entry point also remains available.
 
 Reconstructions are saved under `outputs/osd_jscc_p/snr_<SNR>dB/cr_<CR>/`,
 with per-image metrics in `outputs/osd_jscc_p/metrics.csv`. Use `--metrics psnr
