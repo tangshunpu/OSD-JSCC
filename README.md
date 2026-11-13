@@ -298,4 +298,4 @@ This work builds on [SD-Turbo](https://huggingface.co/stabilityai/sd-turbo),
 [diffusers](https://github.com/huggingface/diffusers),
 [PEFT](https://github.com/huggingface/peft) and
 [pyiqa](https://github.com/chaofengc/IQA-PyTorch). The fine-tuning losses follow
-[AEIC](https://github.com/LuizScarlet/AEIC).
+[StableCodec](https://github.com/LuizScarlet/StableCodec).
